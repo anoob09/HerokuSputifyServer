@@ -9,7 +9,6 @@ from db_app import app
 
 refreshTokenURL = "https://accounts.spotify.com/api/token"
 client_id = 'MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk='
-db.create_all()
 
 @app.route('/', methods=['POST']) 
 def login():
