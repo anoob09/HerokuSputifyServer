@@ -76,7 +76,7 @@ def login():
         if (response.status_code == 200):
             refreshed_token_json = response.json()
             new_access_token = refreshed_token_json["access_token"]
-            print(new_access_token)
+            # print(new_access_token)
             headers = {
                 'Authorization': 'Bearer '+ new_access_token,
             }
@@ -108,7 +108,7 @@ def login():
                 response = requests.get('https://api.spotify.com/v1/me/player/recently-played', headers=headers)
                 if (response.status_code == 200):
                     recently_played_json = response.json()
-                    print(recently_played_json)
+                    # print(recently_played_json)
                     song_name = recently_played_json["items"][0]["track"]["name"]
                     song_url = recently_played_json["items"][0]["track"]["uri"]
                     album_url = recently_played_json["items"][0]["track"]["album"]["images"][-2]["url"]
