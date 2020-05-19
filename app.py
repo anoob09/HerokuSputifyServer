@@ -121,6 +121,3 @@ def login():
     # print(song_urls)
     return_json = {"users" : user_names, "song_names" : song_names, "song_urls" : song_urls, "album_urls" : album_urls}
     return return_json
-
-if __name__ == "__main__":
-	app.run(host='192.168.43.57', port=5000, debug=True)
