@@ -9,6 +9,7 @@ from db_app import app
 
 refreshTokenURL = "https://accounts.spotify.com/api/token"
 client_id = 'MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk='
+redirect_uri = "https://heroku-sputify-server.herokuapp.com"
 
 @app.route('/', methods=['POST']) 
 def login():
@@ -25,7 +26,7 @@ def login():
     data = {
       'grant_type': 'authorization_code',
       'code': code,
-      'redirect_uri': 'https://eflask-app-1.herokuapp.com/'
+      'redirect_uri': redirect_uri
     }
     response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
     token_json = response.json()
