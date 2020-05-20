@@ -7,9 +7,12 @@ from db_app import Users1
 from db_app import db
 from db_app import app
 
-refreshTokenURL = "https://accounts.spotify.com/api/token"
-client_id = 'MGVkNjlhMTNmNDMyNGIxZmEwMmE0Y2YyNmExMWJiYTk6ZTI2MTJkOTFiMGM5NGE4MDg3NzJhMWI5M2NiM2IyYzk='
-redirect_uri = "https://heroku-sputify-server.herokuapp.com"
+refreshTokenURL = os.environ['REFRESH_TOKEN_URL']
+client_id = os.environ['CLIENT_BASE64_ENCODED']
+redirect_uri = os.environ['REDIRECT_URL']
+spotify_api_url = os.environ['SPOTIFY_API_URL']
+spotify_current_playing_url = os.environ['SPOTIFY_CURRENT_PLAYING_URL']
+spotify_recently_played_url = os.environ['SPOTIFY_RECENTLY_PLAYED_URL']
 
 @app.route('/', methods=['POST']) 
 def login():
@@ -28,7 +31,7 @@ def login():
       'code': code,
       'redirect_uri': redirect_uri
     }
-    response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+    response = requests.post(spotify_api_url, headers=headers, data=data)
     token_json = response.json()
     token = token_json["access_token"]
     refresh_token = token_json["refresh_token"]
@@ -43,11 +46,11 @@ def login():
     user_id = user_data_json["id"]
 
     # Remove user if already present in Databse
-    user = Users1.query.filter_by(userid='anoob1').first()
+    user = Users1.query.filter_by(userid=user_id).first()
     if user is not None:
         Users1.query.filter_by(userid=user_id).delete()
         db.session.commit()
-    new_user = Users1(userid = user_id, refreshtoken = refresh_token, latitude = latitude, longitude = longitude, city = "mumbai")
+    new_user = Users1(userid = user_id, refreshtoken = refresh_token, latitude = latitude, longitude = longitude, city = "Tokyo")
     db.session.add(new_user)
     db.session.commit()
 
@@ -72,7 +75,7 @@ def login():
         }
 
         # Get personal info
-        response = requests.post('https://accounts.spotify.com/api/token', headers=headers, data=data)
+        response = requests.post(spotify_api_url, headers=headers, data=data)
         if (response.status_code == 200):
             refreshed_token_json = response.json()
             new_access_token = refreshed_token_json["access_token"]
@@ -88,7 +91,7 @@ def login():
             headers = {
                 'Authorization': 'Bearer ' + new_access_token,
             }
-            response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=headers)
+            response = requests.get(spotify_current_playing_url, headers=headers)
             song_name = ""
             song_url = ""
             album_url = ""
@@ -105,7 +108,7 @@ def login():
                     'Authorization': 'Bearer ' + new_access_token,
                 }
 
-                response = requests.get('https://api.spotify.com/v1/me/player/recently-played', headers=headers)
+                response = requests.get(spotify_recently_played_url, headers=headers)
                 if (response.status_code == 200):
                     recently_played_json = response.json()
                     # print(recently_played_json)
